@@ -13,13 +13,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun SpellingScreen(repo: WordRepository) {
     val scope = rememberCoroutineScope()
-
+    var selectedTopic by remember { mutableStateOf<String?>(null) }
     var current by remember { mutableStateOf<WordEntity?>(null) }
     var article by remember { mutableStateOf("der") }
     var input by remember { mutableStateOf("") }
     var result by remember { mutableStateOf<String?>(null) }
+    var topics by remember { mutableStateOf<List<String>>(emptyList()) }
 
-    LaunchedEffect(Unit) { current = repo.randomWord() }
+    LaunchedEffect(Unit) {
+        topics = repo.topics()
+    }
 
     fun next() {
         result = null
@@ -48,6 +51,13 @@ fun SpellingScreen(repo: WordRepository) {
             Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            TopicPicker(
+                topics = topics,
+                selected = selectedTopic,
+                onSelect = { t ->
+                    selectedTopic = t
+                    next() // перезавантажити слово під новий topic
+                })
             val w = current
             if (w == null) {
                 Text("Немає слів у базі.")

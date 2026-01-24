@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.eduword.data.entity.WordEntity
+import com.example.eduword.data.entity.WordProgressEntity
 import com.example.eduword.data.repository.WordRepository
 import kotlinx.coroutines.launch
 
@@ -15,7 +16,24 @@ import kotlinx.coroutines.launch
 fun FlashcardsScreen(repo: WordRepository) {
     val scope = rememberCoroutineScope()
 
+    var topics by remember { mutableStateOf<List<String>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        topics = repo.topics()
+    }
+    var selectedTopic by remember { mutableStateOf<String?>(null) }
+
+    var prog by remember { mutableStateOf<WordProgressEntity?>(null) }
+
     var current by remember { mutableStateOf<WordEntity?>(null) }
+
+    LaunchedEffect(current?.id) {
+        val id = current?.id ?: return@LaunchedEffect
+        // тут все ОК
+    }
+    val streak = prog?.correctStreak ?: 0
+    Text("Знання: $streak/5", style = MaterialTheme.typography.bodySmall)
+
     var flipped by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { current = repo.randomWord() }
@@ -35,7 +53,13 @@ fun FlashcardsScreen(repo: WordRepository) {
                 Text("Немає слів у базі.")
                 return@Column
             }
-
+            TopicPicker(
+                topics = topics,
+                selected = selectedTopic,
+                onSelect = { t ->
+                    selectedTopic = t
+                    next() // перезавантажити слово під новий topic
+                })
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

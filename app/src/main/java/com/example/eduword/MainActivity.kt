@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         CoroutineScope(Dispatchers.IO).launch {
-            repo.seedIfEmpty(SeedWords.germanA1)
+            repo.seedMerge(SeedWords.germanA1)
         }
 
         setContent {

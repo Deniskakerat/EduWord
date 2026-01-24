@@ -8,9 +8,12 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun HomeScreen(
     onFlashcards: () -> Unit,
     onSpelling: () -> Unit,
+    onAddWord: () -> Unit,
+    onArticle: () -> Unit
 ) {
     Scaffold(
         topBar = { TopAppBar(title = { Text("EduWord") }) }
@@ -23,7 +26,22 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text("Німецька • v0.1", style = MaterialTheme.typography.titleMedium)
-
+            ElevatedButton(
+                onClick = onAddWord,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            ) {
+                Text("Додати слово")
+            }
+            ElevatedButton(
+                onClick = onArticle,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            ) {
+                Text("Перевірка Артиклів")
+            }
             ElevatedButton(
                 onClick = onFlashcards,
                 modifier = Modifier.fillMaxWidth().height(56.dp)
