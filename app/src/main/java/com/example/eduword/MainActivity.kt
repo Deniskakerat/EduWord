@@ -1,20 +1,39 @@
 package com.example.eduword
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.room.Room
+import com.example.eduword.data.db.AppDatabase
+import com.example.eduword.data.repository.WordRepository
+import com.example.eduword.data.seed.SeedWords
+import com.example.eduword.ui.nav.EduNavHost
+import com.example.eduword.ui.theme.EduWordTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
+
+    private val db by lazy {
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "eduword.db")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    private val repo by lazy { WordRepository(db.wordDao()) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        CoroutineScope(Dispatchers.IO).launch {
+            repo.seedIfEmpty(SeedWords.germanA1)
+        }
+
+        setContent {
+            EduWordTheme {
+                EduNavHost(repo = repo)
+            }
         }
     }
 }
