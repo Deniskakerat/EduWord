@@ -1,18 +1,16 @@
 package com.example.eduword.data.repository
 
-
 import com.example.eduword.data.dao.WordDao
 import com.example.eduword.data.entity.WordEntity
-import kotlinx.coroutines.flow.Flow
-
 import com.example.eduword.data.entity.WordProgressEntity
-import kotlin.text.insert
-
+import kotlinx.coroutines.flow.Flow
 
 class WordRepository(private val dao: WordDao) {
 
     suspend fun insertWord(word: WordEntity): Long = dao.insert(word)
+
     fun observeAll(): Flow<List<WordEntity>> = dao.observeAll()
+
     suspend fun recordAttempt(wordId: Long, isCorrect: Boolean) {
         val old = dao.getProgress(wordId) ?: WordProgressEntity(wordId = wordId)
 
@@ -31,11 +29,23 @@ class WordRepository(private val dao: WordDao) {
             )
         )
     }
+
+    suspend fun markSuccess(wordId: Long) {
+        recordAttempt(wordId, true)
+    }
+
+    suspend fun markFail(wordId: Long) {
+        recordAttempt(wordId, false)
+    }
+
     suspend fun seedMerge(seed: List<WordEntity>) {
         dao.insertAllIgnore(seed) // додасть тільки те, чого ще нема
     }
+
     suspend fun progress(wordId: Long): WordProgressEntity? = dao.getProgress(wordId)
+
     suspend fun topics(): List<String> = dao.getTopics()
+
     suspend fun randomWord(topic: String?): WordEntity? = dao.getRandomByTopic(topic)
 
     suspend fun randomWord(): WordEntity? = dao.getRandom()

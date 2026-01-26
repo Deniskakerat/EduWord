@@ -10,6 +10,7 @@ import com.example.eduword.ui.screens.ArticleQuizScreen
 import com.example.eduword.ui.screens.FlashcardsScreen
 import com.example.eduword.ui.screens.HomeScreen
 import com.example.eduword.ui.screens.SpellingScreen
+import com.example.eduword.ui.screens.WordListScreen
 
 @Composable
 fun EduNavHost(repo: WordRepository) {
@@ -17,17 +18,12 @@ fun EduNavHost(repo: WordRepository) {
 
     NavHost(navController = nav, startDestination = Routes.HOME) {
         composable(Routes.HOME) {
-            HomeScreen(
-                onFlashcards = { nav.navigate(Routes.FLASHCARDS) },
-                onSpelling = { nav.navigate(Routes.SPELLING) },
-                onAddWord = { nav.navigate(Routes.ADD_WORD) },
-                onArticle = { nav.navigate(Routes.ARTICLE_QUIZ) }
-            )
+            HomeScreen(navController = nav)
         }
         composable(Routes.ADD_WORD) { AddWordScreen(repo) }
         composable(Routes.ARTICLE_QUIZ) { ArticleQuizScreen(repo) }
         composable(Routes.FLASHCARDS) { FlashcardsScreen(repo = repo) }
         composable(Routes.SPELLING) { SpellingScreen(repo = repo) }
+        composable(Routes.WORD_LIST) { WordListScreen(repo) }
     }
 }
-

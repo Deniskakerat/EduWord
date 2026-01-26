@@ -16,5 +16,6 @@ data class WordEntity(
     val article: String? = null,
     val lemma: String,
     val plural: String? = null,
-    val ukTranslation: String
+    val ukTranslation: String,
+    val engTranslation: String
 )

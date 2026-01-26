@@ -61,7 +61,8 @@ fun AddWordScreen(repo: WordRepository) {
                                 article = article,
                                 lemma = l,
                                 plural = plural.trim().ifBlank { null },
-                                ukTranslation = t
+                                ukTranslation = t,
+                                engTranslation = ""
                             )
                         )
                         lemma = ""; uk = ""; plural = ""

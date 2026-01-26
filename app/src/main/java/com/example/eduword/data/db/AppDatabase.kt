@@ -12,7 +12,7 @@ import com.example.eduword.data.entity.WordProgressEntity
 
 @Database(
     entities = [WordEntity::class, WordProgressEntity::class],
-    version = 2,
+    version = 3, // Incremented version
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -30,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "word_database"
                 )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3) // Added new migration
                 .build()
                 INSTANCE = instance
                 instance
@@ -40,6 +40,12 @@ abstract class AppDatabase : RoomDatabase() {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE IF NOT EXISTS `word_progress` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `wordId` INTEGER NOT NULL, `correctAnswers` INTEGER NOT NULL, `totalPresentations` INTEGER NOT NULL, FOREIGN KEY(`wordId`) REFERENCES `words`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )")
+            }
+        }
+
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `words` ADD COLUMN `engTranslation` TEXT NOT NULL DEFAULT ''")
             }
         }
     }
