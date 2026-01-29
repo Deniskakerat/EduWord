@@ -16,12 +16,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.eduword.ui.nav.Routes
 import com.example.eduword.ui.settings.AppSettings
+import com.example.eduword.ui.strings.strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("EduWord") }) }
+        topBar = { TopAppBar(title = { Text(strings.appName) }) }
     ) { padding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
@@ -37,33 +38,36 @@ fun HomeScreen(navController: NavController) {
                     fontSize = 48.sp,
                     modifier = Modifier.padding(8.dp)
                 )
-                Text("Change Language")
+                Text(strings.changeLanguage)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(onClick = { navController.navigate(Routes.FLASHCARDS) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Flashcards")
+                    Text(strings.flashcards)
                 }
                 Button(onClick = { navController.navigate(Routes.SPELLING) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Spelling")
+                    Text(strings.spelling)
                 }
                 Button(onClick = { navController.navigate(Routes.ARTICLE_QUIZ) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Article Quiz")
+                    Text(strings.articleQuiz)
                 }
                 Button(onClick = { navController.navigate(Routes.ADD_WORD) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Add Word")
+                    Text(strings.addWord)
                 }
                 Button(onClick = { navController.navigate(Routes.WORD_LIST) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Word List")
+                    Text(strings.wordList)
+                }
+                Button(onClick = { navController.navigate(Routes.SCAN) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
+                    Text("Scan")
                 }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "Version 1.0",
+                text = strings.version,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(8.dp)
             )

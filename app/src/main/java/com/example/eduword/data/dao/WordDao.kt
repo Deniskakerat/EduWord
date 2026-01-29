@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WordDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAllIgnore(items: List<WordEntity>): List<Long>
 
     @Query("""
     SELECT * FROM words
@@ -20,8 +22,7 @@ interface WordDao {
     suspend fun getRandomByTopic(topic: String?): WordEntity?
     @Query("SELECT DISTINCT topic FROM words ORDER BY topic")
     suspend fun getTopics(): List<String>
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAllIgnore(items: List<WordEntity>): List<Long>
+
     @Insert
     suspend fun insert(word: WordEntity): Long
 
@@ -40,6 +41,5 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words")
     suspend fun count(): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(items: List<WordEntity>)
+
 }

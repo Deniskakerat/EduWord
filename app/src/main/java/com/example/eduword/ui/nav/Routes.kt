@@ -7,4 +7,6 @@ object Routes {
     const val ARTICLE_QUIZ = "article_quiz"
     const val ADD_WORD = "add_word"
     const val WORD_LIST = "word_list"
+    const val SCAN = "scan"
+    const val IMPORT_REVIEW = "import_review"
 }

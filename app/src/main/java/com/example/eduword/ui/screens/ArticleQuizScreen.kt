@@ -12,6 +12,7 @@ import com.example.eduword.ui.settings.AppSettings
 import kotlinx.coroutines.launch
 import com.example.eduword.data.entity.WordProgressEntity
 import com.example.eduword.ui.components.KnowledgeIndicator
+import com.example.eduword.ui.strings.strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,15 +47,15 @@ fun ArticleQuizScreen(repo: WordRepository) {
     fun answer(chosen: String) {
         val w = current ?: return
         val correctArticle = w.article ?: ""
-        val isCorrect = if (chosen == "Keine") correctArticle.isBlank() else chosen == correctArticle
+        val isCorrect = if (chosen == strings.keine) correctArticle.isBlank() else chosen == correctArticle
 
         scope.launch {
             repo.recordAttempt(w.id, isCorrect)
         }
-        feedback = if (isCorrect) "✅ Правильно" else "❌ Ні, правильно: ${correctArticle.ifBlank { "Keine" }}"
+        feedback = if (isCorrect) strings.correct else strings.incorrectArticle(correctArticle.ifBlank { strings.keine })
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Артиклі (тест)") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text(strings.articleQuiz) }) }) { padding ->
         Column(
             Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -69,7 +70,7 @@ fun ArticleQuizScreen(repo: WordRepository) {
 
             val w = current
             if (w == null) {
-                Text("Немає слів у базі.")
+                Text(strings.noWordsInDb)
                 return@Column
             }
             KnowledgeIndicator(streak)
@@ -81,17 +82,17 @@ fun ArticleQuizScreen(repo: WordRepository) {
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
                     if (!flipped) {
-                        Text("Який артикль?", style = MaterialTheme.typography.labelMedium)
+                        Text(strings.whichArticle, style = MaterialTheme.typography.labelMedium)
                         Spacer(Modifier.height(8.dp))
                         Text(w.lemma, style = MaterialTheme.typography.headlineMedium)
                     } else {
-                        Text("Переклад", style = MaterialTheme.typography.labelMedium)
+                        Text(strings.translation, style = MaterialTheme.typography.labelMedium)
                         Spacer(Modifier.height(8.dp))
                         val translation = if (AppSettings.currentLanguage == "EN") w.engTranslation else w.ukTranslation
                         Text(translation, style = MaterialTheme.typography.headlineMedium)
                         if (w.plural != null) {
                             Spacer(Modifier.height(8.dp))
-                            Text("Plural: ${w.plural}", style = MaterialTheme.typography.bodyMedium)
+                            Text(strings.plural(w.plural), style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -107,9 +108,9 @@ fun ArticleQuizScreen(repo: WordRepository) {
                     }
                 }
                 Button(
-                    onClick = { answer("Keine") },
+                    onClick = { answer(strings.keine) },
                     modifier = Modifier.fillMaxWidth().height(52.dp)
-                ) { Text("Keine") }
+                ) { Text(strings.keine) }
             }
 
             if (feedback != null) {
@@ -117,11 +118,11 @@ fun ArticleQuizScreen(repo: WordRepository) {
                     Text(feedback!!, Modifier.padding(16.dp))
                 }
                 Button(onClick = { next() }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
-                    Text("Далі")
+                    Text(strings.next)
                 }
             }
 
-            Text("Тап по картці → показати переклад", style = MaterialTheme.typography.bodySmall)
+            Text(strings.tapToSeeTranslation, style = MaterialTheme.typography.bodySmall)
         }
     }
 }

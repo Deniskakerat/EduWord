@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.eduword.data.entity.WordEntity
 import com.example.eduword.data.repository.WordRepository
 import com.example.eduword.ui.settings.AppSettings
+import com.example.eduword.ui.strings.strings
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,21 +44,21 @@ fun SpellingScreen(repo: WordRepository) {
 
     fun check(w: WordEntity) {
         val correctLemma = w.lemma.trim()
-        val correctArticle = (w.article ?: "".trim())
-        val correctArticleForDisplay = correctArticle.ifBlank { "keine" }
+        val correctArticle = (w.article ?: "").trim()
+        val correctArticleForDisplay = correctArticle.ifBlank { strings.keine }
 
         val lemmaOk = input.trim().equals(correctLemma, ignoreCase = true)
-        val articleOk = if (correctArticle.isBlank()) article == "keine" else article == correctArticle
+        val articleOk = if (correctArticle.isBlank()) article == strings.keine else article == correctArticle
 
         result = when {
-            lemmaOk && articleOk -> "✅ Правильно!"
-            !articleOk && lemmaOk -> "⚠️ Слово правильно, артикль ні. Правильно: $correctArticleForDisplay"
-            articleOk && !lemmaOk -> "⚠️ Артикль правильно, слово ні. Правильно: ${w.lemma}"
-            else -> "❌ Неправильно. Правильно: $correctArticleForDisplay ${w.lemma}".trim()
+            lemmaOk && articleOk -> strings.correct
+            !articleOk && lemmaOk -> strings.correctWordWrongArticle(correctArticleForDisplay)
+            articleOk && !lemmaOk -> strings.correctArticleWrongWord(w.lemma)
+            else -> strings.incorrect(correctArticleForDisplay, w.lemma)
         }
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Правопис") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text(strings.spelling) }) }) { padding ->
         Column(
             Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -71,11 +72,11 @@ fun SpellingScreen(repo: WordRepository) {
                 })
             val w = current
             if (w == null) {
-                Text("Немає слів у базі.")
+                Text(strings.noWordsInDb)
                 return@Column
             }
 
-            Text("Переклад:", style = MaterialTheme.typography.labelMedium)
+            Text("${strings.translation}:", style = MaterialTheme.typography.labelMedium)
             val translation = if (AppSettings.currentLanguage == "EN") w.engTranslation else w.ukTranslation
             Text(translation, style = MaterialTheme.typography.headlineSmall)
 
@@ -95,11 +96,11 @@ fun SpellingScreen(repo: WordRepository) {
                     }
                 }
                 FilterChip(
-                    selected = article == "keine",
-                    onClick = { article = "keine" },
+                    selected = article == strings.keine,
+                    onClick = { article = strings.keine },
                     label = {
                         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            Text("Keine")
+                            Text(strings.keine)
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -109,7 +110,7 @@ fun SpellingScreen(repo: WordRepository) {
             OutlinedTextField(
                 value = input,
                 onValueChange = { input = it },
-                label = { Text("Введи слово німецькою") },
+                label = { Text(strings.enterWordInGerman) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -117,12 +118,12 @@ fun SpellingScreen(repo: WordRepository) {
                 OutlinedButton(
                     onClick = { check(w) },
                     modifier = Modifier.weight(1f).height(52.dp)
-                ) { Text("Перевірити") }
+                ) { Text(strings.check) }
 
                 Button(
                     onClick = { next() },
                     modifier = Modifier.weight(1f).height(52.dp)
-                ) { Text("Далі") }
+                ) { Text(strings.next) }
             }
 
             if (result != null) {
@@ -133,7 +134,7 @@ fun SpellingScreen(repo: WordRepository) {
 
             if (!w.plural.isNullOrBlank()) {
                 key(w.id) { // Reset spoiler state for each new word
-                    Spoiler(text = "Plural: ${w.plural}")
+                    Spoiler(text = strings.hint(w.plural!!))
                 }
             }
         }
@@ -170,7 +171,7 @@ private fun Spoiler(modifier: Modifier = Modifier, text: String) {
             if (isRevealed) {
                 Text(text = text, color = contentColor)
             } else {
-                Text(text = "Показати підказку", color = contentColor)
+                Text(text = strings.showHint, color = contentColor)
             }
         }
     }

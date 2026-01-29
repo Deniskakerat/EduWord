@@ -6,6 +6,7 @@ import com.example.eduword.data.entity.WordProgressEntity
 import kotlinx.coroutines.flow.Flow
 
 class WordRepository(private val dao: WordDao) {
+    suspend fun insertAllIgnore(items: List<WordEntity>) = dao.insertAllIgnore(items)
 
     suspend fun insertWord(word: WordEntity): Long = dao.insert(word)
 
@@ -50,7 +51,5 @@ class WordRepository(private val dao: WordDao) {
 
     suspend fun randomWord(): WordEntity? = dao.getRandom()
 
-    suspend fun seedIfEmpty(seed: List<WordEntity>) {
-        if (dao.count() == 0) dao.insertAll(seed)
-    }
+
 }

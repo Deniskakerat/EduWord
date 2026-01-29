@@ -15,6 +15,7 @@ import com.example.eduword.data.entity.WordProgressEntity
 import com.example.eduword.data.repository.WordRepository
 import com.example.eduword.ui.components.KnowledgeIndicator
 import com.example.eduword.ui.settings.AppSettings
+import com.example.eduword.ui.strings.strings
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,7 @@ fun FlashcardsScreen(repo: WordRepository) {
         }
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Картки") }) }) { padding ->
+    Scaffold(topBar = { TopAppBar(title = { Text(strings.flashcards) }) }) { padding ->
         Column(
             Modifier
                 .padding(padding)
@@ -56,7 +57,7 @@ fun FlashcardsScreen(repo: WordRepository) {
         ) {
             val w = current
             if (w == null) {
-                Text("Немає слів у базі.")
+                Text(strings.noWordsInDb)
                 return@Column
             }
 
@@ -70,7 +71,7 @@ fun FlashcardsScreen(repo: WordRepository) {
 
             val streak = progress?.correctStreak ?: 0
             KnowledgeIndicator(streak = streak)
-            Text("Знання: $streak/5", style = MaterialTheme.typography.bodySmall)
+            Text(strings.knowledge(streak), style = MaterialTheme.typography.bodySmall)
 
             Card(
                 modifier = Modifier
@@ -81,20 +82,20 @@ fun FlashcardsScreen(repo: WordRepository) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.Center) {
                         if (!flipped) {
-                            Text("Питання", style = MaterialTheme.typography.labelMedium)
+                            Text(strings.question, style = MaterialTheme.typography.labelMedium)
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 text = "${w.article ?: ""} ${w.lemma}".trim(),
                                 style = MaterialTheme.typography.headlineMedium
                             )
                         } else {
-                            Text("Відповідь", style = MaterialTheme.typography.labelMedium)
+                            Text(strings.answer, style = MaterialTheme.typography.labelMedium)
                             Spacer(Modifier.height(8.dp))
                             val translation = if (AppSettings.currentLanguage == "EN") w.engTranslation else w.ukTranslation
                             Text(translation, style = MaterialTheme.typography.headlineMedium)
                             if (w.plural != null) {
                                 Spacer(Modifier.height(8.dp))
-                                Text("Plural: ${w.plural}", style = MaterialTheme.typography.bodyMedium)
+                                Text(strings.plural(w.plural), style = MaterialTheme.typography.bodyMedium)
                             }
                         }
                     }
@@ -112,7 +113,7 @@ fun FlashcardsScreen(repo: WordRepository) {
                         }
                     },
                     modifier = Modifier.weight(1f).height(52.dp)
-                ) { Text("Не знаю") }
+                ) { Text(strings.iDontKnow) }
 
                 Button(
                     onClick = {
@@ -124,10 +125,10 @@ fun FlashcardsScreen(repo: WordRepository) {
                         }
                     },
                     modifier = Modifier.weight(1f).height(52.dp)
-                ) { Text("Знаю") }
+                ) { Text(strings.iKnow) }
             }
 
-            Text("Тап по картці → переворот", style = MaterialTheme.typography.bodySmall)
+            Text(strings.tapToFlip, style = MaterialTheme.typography.bodySmall)
         }
     }
 }

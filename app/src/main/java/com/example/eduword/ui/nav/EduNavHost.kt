@@ -4,13 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.eduword.data.ocr.OcrResultHolder
 import com.example.eduword.data.repository.WordRepository
-import com.example.eduword.ui.screens.AddWordScreen
-import com.example.eduword.ui.screens.ArticleQuizScreen
-import com.example.eduword.ui.screens.FlashcardsScreen
-import com.example.eduword.ui.screens.HomeScreen
-import com.example.eduword.ui.screens.SpellingScreen
-import com.example.eduword.ui.screens.WordListScreen
+import com.example.eduword.ui.screens.*
 
 @Composable
 fun EduNavHost(repo: WordRepository) {
@@ -25,5 +21,15 @@ fun EduNavHost(repo: WordRepository) {
         composable(Routes.FLASHCARDS) { FlashcardsScreen(repo = repo) }
         composable(Routes.SPELLING) { SpellingScreen(repo = repo) }
         composable(Routes.WORD_LIST) { WordListScreen(repo) }
+        composable(Routes.SCAN) {
+            ScanScreen(onResult = {
+                OcrResultHolder.ocrResult = it
+                nav.navigate(Routes.IMPORT_REVIEW)
+            })
+        }
+        composable(Routes.IMPORT_REVIEW) {
+            val rows = OcrResultHolder.ocrResult ?: emptyList()
+            ImportReviewScreen(repo = repo, initial = rows, onDone = { nav.popBackStack() })
+        }
     }
 }

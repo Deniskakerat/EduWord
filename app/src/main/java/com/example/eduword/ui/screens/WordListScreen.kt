@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.eduword.data.entity.WordEntity
 import com.example.eduword.data.repository.WordRepository
 import com.example.eduword.ui.settings.AppSettings
+import com.example.eduword.ui.strings.strings
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +32,7 @@ fun WordListScreen(repo: WordRepository) {
     var words by remember { mutableStateOf<List<WordEntity>>(emptyList()) }
     var topics by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedTopic by remember { mutableStateOf<String?>(null) }
-    var sortBy by remember { mutableStateOf("Topic") }
+    var sortBy by remember { mutableStateOf(strings.topic) }
 
     LaunchedEffect(Unit) {
         topics = repo.topics()
@@ -44,26 +45,31 @@ fun WordListScreen(repo: WordRepository) {
         words.filter { it.topic == selectedTopic }
     }
 
-    val sortedWords = if (sortBy == "A-Z") {
+    val sortedWords = if (sortBy == strings.fromAtoZ) {
         filteredWords.sortedBy { it.lemma }
     } else {
         filteredWords.sortedWith(compareBy({ it.topic }, { it.lemma }))
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Word List") }) }
+        topBar = { TopAppBar(title = { Text(strings.wordList) }) }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).padding(16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                TopicPicker(topics = topics, selected = selectedTopic, onSelect = { selectedTopic = it })
-
+                TopicPicker(
+                    topics = topics,
+                    selected = selectedTopic,
+                    onSelect = { selectedTopic = it })
+                SortByPicker(
+                    selected = sortBy,
+                    onSelect = { sortBy = it })
             }
 
             Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                Text("Article", modifier = Modifier.weight(0.6f), fontWeight = FontWeight.Bold)
-                Text("Deutsch", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
-                Text("Plural", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
-                Text("Translation", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+                Text(strings.article, modifier = Modifier.weight(0.5f), fontWeight = FontWeight.Bold)
+                Text(strings.german, modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+                Text(strings.plural(""), modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+                Text(strings.translation, modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
             }
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -98,23 +104,23 @@ private fun SortByPicker(selected: String, onSelect: (String) -> Unit) {
             value = selected,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Sort by") },
+            label = { Text(strings.sortBy) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier.menuAnchor()
         )
 
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             DropdownMenuItem(
-                text = { Text("Topic") },
+                text = { Text(strings.topic) },
                 onClick = {
-                    onSelect("Topic")
+                    onSelect(strings.topic)
                     expanded = false
                 }
             )
             DropdownMenuItem(
-                text = { Text("A-Z") },
+                text = { Text(strings.fromAtoZ) },
                 onClick = {
-                    onSelect("A-Z")
+                    onSelect(strings.fromAtoZ)
                     expanded = false
                 }
             )
