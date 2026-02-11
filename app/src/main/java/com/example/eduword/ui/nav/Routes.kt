@@ -9,4 +9,7 @@ object Routes {
     const val WORD_LIST = "word_list"
     const val SCAN = "scan"
     const val IMPORT_REVIEW = "import_review"
+    const val QUICK_IMPORT = "quick_import"
+
+    const val TABLE_EDITOR = "table_editor"
 }

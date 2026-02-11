@@ -31,6 +31,7 @@ object SeedWords {
         WordEntity(topic="Einkaufen", level="A1", article="das", lemma="Pfund", plural="Pfunde", ukTranslation="пів кіло", engTranslation="pound"),
         WordEntity(topic="Einkaufen", level="A1", article="die", lemma="Scheibe", plural="Scheiben", ukTranslation="скибка", engTranslation="slice"),
         // Kopf & Gesicht
+
         WordEntity(topic="Körper", level="A1", article="der", lemma="Kopf", plural="Köpfe", ukTranslation="голова", engTranslation="head"),
         WordEntity(topic="Körper", level="A1", article="die", lemma="Stirn", plural="Stirnen", ukTranslation="лоб", engTranslation="forehead"),
         WordEntity(topic="Körper", level="A1", article="die", lemma="Schläfe", plural="Schläfen", ukTranslation="скроня", engTranslation="temple"),

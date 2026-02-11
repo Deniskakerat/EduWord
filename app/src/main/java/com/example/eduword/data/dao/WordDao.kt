@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WordDao {
+    @Query("SELECT * FROM words WHERE language = 'DE' AND lemma = :lemma LIMIT 1")
+    suspend fun findGermanByLemma(lemma: String): WordEntity?
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAllIgnore(items: List<WordEntity>): List<Long>
 

@@ -62,6 +62,9 @@ fun HomeScreen(navController: NavController) {
                 Button(onClick = { navController.navigate(Routes.SCAN) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
                     Text("Scan")
                 }
+                Button(onClick = { navController.navigate(Routes.QUICK_IMPORT) }, modifier = Modifier.fillMaxWidth().height(52.dp)) {
+                    Text("Quick import")
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))

@@ -55,12 +55,15 @@ fun WordListScreen(repo: WordRepository) {
         topBar = { TopAppBar(title = { Text(strings.wordList) }) }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).padding(16.dp)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row( modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TopicPicker(
+                    modifier = Modifier.weight(1f),
                     topics = topics,
                     selected = selectedTopic,
                     onSelect = { selectedTopic = it })
                 SortByPicker(
+                    modifier = Modifier.weight(1f),
                     selected = sortBy,
                     onSelect = { sortBy = it })
             }
@@ -96,34 +99,41 @@ private fun WordCard(word: WordEntity) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SortByPicker(selected: String, onSelect: (String) -> Unit) {
+private fun SortByPicker( modifier: Modifier = Modifier,
+                          selected: String,
+                          onSelect: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+    ExposedDropdownMenuBox(
+        modifier = modifier,
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
         OutlinedTextField(
             value = selected,
             onValueChange = {},
             readOnly = true,
+            singleLine = true,
             label = { Text(strings.sortBy) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier
+                .menuAnchor()      // якір для меню
+                .fillMaxWidth()     // критично!
         )
 
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             DropdownMenuItem(
                 text = { Text(strings.topic) },
-                onClick = {
-                    onSelect(strings.topic)
-                    expanded = false
-                }
+                onClick = { onSelect(strings.topic); expanded = false }
             )
             DropdownMenuItem(
                 text = { Text(strings.fromAtoZ) },
-                onClick = {
-                    onSelect(strings.fromAtoZ)
-                    expanded = false
-                }
+                onClick = { onSelect(strings.fromAtoZ); expanded = false }
             )
         }
-    }
+        }
 }

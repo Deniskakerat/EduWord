@@ -8,39 +8,44 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopicPicker(topics: List<String>, selected: String?, onSelect: (String?) -> Unit) {
+fun TopicPicker(
+    modifier: Modifier = Modifier,
+    topics: List<String>,
+    selected: String?,
+    onSelect: (String?) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier.fillMaxWidth()
+    ExposedDropdownMenuBox(
+        modifier = modifier, // <-- важливо
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
     ) {
-        ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-            OutlinedTextField(
-                value = selected ?: "All",
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Topic") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
-            )
+        OutlinedTextField(
+            value = selected ?: "All",
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            label = { Text("Topic") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth() // <-- важливо для нормального anchor
+        )
 
-            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("All") },
+                onClick = { onSelect(null); expanded = false }
+            )
+            topics.forEach { topic ->
                 DropdownMenuItem(
-                    text = { Text("All") },
-                    onClick = {
-                        onSelect(null)
-                        expanded = false
-                    }
+                    text = { Text(topic) },
+                    onClick = { onSelect(topic); expanded = false }
                 )
-                topics.forEach { topic ->
-                    DropdownMenuItem(
-                        text = { Text(topic) },
-                        onClick = {
-                            onSelect(topic)
-                            expanded = false
-                        }
-                    )
-                }
             }
         }
     }

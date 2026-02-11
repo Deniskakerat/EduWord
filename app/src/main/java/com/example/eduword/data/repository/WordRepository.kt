@@ -51,5 +51,5 @@ class WordRepository(private val dao: WordDao) {
 
     suspend fun randomWord(): WordEntity? = dao.getRandom()
 
-
+    suspend fun findGermanByLemma(lemma: String): WordEntity? = dao.findGermanByLemma(lemma)
 }
